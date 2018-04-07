@@ -4,8 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Todo;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query;
-use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 /**
  * TodoRepository
@@ -32,13 +31,38 @@ class TodoRepository extends EntityRepository
     }
 
     /**
-     * Deletes Todo.
-     *
+     * Deletes Todo, after check if the user can do the action.
+     * @param \App\Application\Sonata\UserBundle\Entity\User $user
      * @param Todo $todo
      */
-    public function deleteTodo(Todo $todo)
+    public function deleteTodo(Todo $todo, \App\Application\Sonata\UserBundle\Entity\User $user)
     {
-        $this->_em->remove($todo);
-        $this->_em->flush();
+        if (!is_null($user) && $todo->getOwner() == $user || $user->hasRole('ROLE_SUPER_ADMIN')) {
+            $this->getEntityManager()->remove($todo);
+            $this->getEntityManager()->flush();
+        } else throw new AccessDeniedException('Impossibile rimuovere un todo di cui non si è proprietari');
     }
+
+    /**
+     * Gets all Todo owned by a specific user
+     *
+     * @param \App\Application\Sonata\UserBundle\Entity\User $user
+     * @return mixed
+     */
+    public function getAllTodoByOwner($user)
+    {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+
+        return $qb->select('t')
+            ->from('App:Todo', 't')
+            /* Todo, allow ROLE_SUPER_ADMIN to obtain all todoes (add the owner in the serialized json
+             * then modify the excludes on baseUser (remove sensitive data like password hash etc)
+             */
+            ->where(
+                $qb->expr()->eq('t.owner', $user->getId())
+            )
+            ->getQuery()->getResult();
+    }
+
 }

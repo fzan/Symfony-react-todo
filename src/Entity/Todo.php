@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * Tod0
@@ -49,6 +50,7 @@ class Todo
      * Many tod0 can have multiple users attached.
      * @ORM\ManyToOne(targetEntity="App\Application\Sonata\UserBundle\Entity\User", inversedBy="todos")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
+     * @Exclude
      */
     private $owner;
 
