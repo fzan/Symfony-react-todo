@@ -35,8 +35,8 @@ before-install:
 # Install composer dependencies,
 # Create database, schema and fixtures
 install:
-  - composer install
   - cp .env.dist .env
+  - composer install
   - php bin/console doctrine:database:create --env=test
   - php bin/console doctrine:schema:create --env=test
   - php bin/console doctrine:fixtures:load -n --env=test
