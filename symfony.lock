@@ -83,6 +83,9 @@
     "enqueue/amqp-tools": {
         "version": "0.8.23"
     },
+    "exsyst/swagger": {
+        "version": "v0.4.0"
+    },
     "fig/link-util": {
         "version": "1.0.0"
     },
@@ -139,6 +142,15 @@
     },
     "monolog/monolog": {
         "version": "1.23.0"
+    },
+    "nelmio/api-doc-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "f95712101a2316e607a95ec54629e791fd3ee875"
+        }
     },
     "nikic/php-parser": {
         "version": "v4.0.0"
@@ -550,5 +562,8 @@
     },
     "zendframework/zenddiagnostics": {
         "version": "v1.1.0"
+    },
+    "zircote/swagger-php": {
+        "version": "2.0.13"
     }
 }
