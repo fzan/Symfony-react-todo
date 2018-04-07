@@ -29,6 +29,7 @@ env:
 
 # Update composer
 before-install:
+ - mysql -e 'CREATE DATABASE symfony;'
   - composer self-update
 
 # Install composer dependencies,
