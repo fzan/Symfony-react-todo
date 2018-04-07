@@ -1,0 +1,48 @@
+version: '2'
+
+services:
+
+  php:
+    build:
+      context: ./dockers/php
+      args:
+        - mysql=1 #${DCSF_MYSQL}
+        - xdebug=1 #${DCSF_XDEBUG}
+        - gd=${DCSF_GD}
+    environment:
+      TIMEZONE: ${DCSF_TIMEZONE}
+      DISPLAY_ERRORS: 1 #${DCSF_PHP_DISPLAY_ERRORS}
+      XDEBUG_HOST: docker.for.mac.localhost #${DCSF_XDEBUG_HOST}
+      SYMFONY_VERSION: ${DCSF_SF_VER}
+    links:
+      - mysql:mysqldb
+    depends_on:
+      - mysql
+    volumes:
+      - ./dockers/php/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./public:/var/www/app:cached
+
+
+  mysql:
+    image: mariadb
+    ports:
+        - 6033:3306
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=symfony
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+
+  webserver:
+    image: nginx:1.11
+    depends_on:
+      - php
+    volumes_from:
+      - php
+    volumes:
+      - ./dockers/nginx/app.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - 8080:80
+
+volumes:
+  db: {}
