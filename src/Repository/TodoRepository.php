@@ -12,8 +12,7 @@ use Symfony\Component\Finder\Exception\AccessDeniedException;
 class TodoRepository extends EntityRepository
 {
     /**
-     * Persists todo to database if it doesn't exist in database.
-     *
+     * Persists todo to database if it doesn't exist in database
      * @param Todo $todo
      * @return Todo
      */
@@ -38,9 +37,38 @@ class TodoRepository extends EntityRepository
     public function deleteTodo(Todo $todo, \App\Application\Sonata\UserBundle\Entity\User $user)
     {
         if (!is_null($user) && $todo->getOwner() == $user || $user->hasRole('ROLE_SUPER_ADMIN')) {
-            $this->getEntityManager()->remove($todo);
-            $this->getEntityManager()->flush();
+            $this->_em->remove($todo);
+            $this->_em->flush();
         } else throw new AccessDeniedException('Impossibile rimuovere un todo di cui non si è proprietari');
+    }
+
+    /**
+     * Toggle Todo, after check if the user can do the action.
+     * @param \App\Application\Sonata\UserBundle\Entity\User $user
+     * @param Todo $todo
+     */
+    public function toggleTodo(Todo $todo, \App\Application\Sonata\UserBundle\Entity\User $user)
+    {
+        if (!is_null($user) && $todo->getOwner() == $user || $user->hasRole('ROLE_SUPER_ADMIN')) {
+            $todo->setCompleted(!$todo->getCompleted());
+            $this->_em->flush();
+        } else throw new AccessDeniedException('Impossibile modificare un todo di cui non si è proprietari');
+    }
+
+    /**
+     * Add Todo for a specific user.
+     * @param \App\Application\Sonata\UserBundle\Entity\User $user
+     * @param Todo $todo
+     * @return mixed
+     */
+    public function addTodo(Todo $todo, \App\Application\Sonata\UserBundle\Entity\User $user)
+    {
+        if (!is_null($user) && $todo->getOwner() == $user || $user->hasRole('ROLE_SUPER_ADMIN')) {
+            $todo->setOwner($user);
+            $this->_em->persist($todo);
+            $this->_em->flush();
+            return $todo;
+        } else throw new AccessDeniedException('Impossibile modificare un todo di cui non si è proprietari');
     }
 
     /**

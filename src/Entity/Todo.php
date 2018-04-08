@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Exclude;
-
+use JMS\Serializer\Annotation\SerializedName;
 /**
  * Tod0
  *
@@ -41,7 +41,7 @@ class Todo
 
     /**
      * @var boolean
-     *
+     * @SerializedName("isCompleted")
      * @ORM\Column(name="completed", type="boolean", options={"default" = 0})
      */
     private $completed;
@@ -56,10 +56,17 @@ class Todo
 
     /**
      * @var \DateTime
-     *
+     * @SerializedName("end")
      * @ORM\Column(name="dueDate", type="datetime", nullable=true)
      */
     private $dueDate;
+
+    /**
+     * @var \DateTime
+     * @SerializedName("start")
+     * @ORM\Column(name="insertDate", type="datetime", nullable=false)
+     */
+    private $insertDate;
 
     /**
      * @var \DateTime
@@ -101,13 +108,6 @@ class Todo
     }
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="insertDate", type="datetime", nullable=false)
-     */
-    private $insertDate;
-
-    /**
      * @param \DateTime $insertDate
      */
     public function setInsertDate($insertDate)
@@ -126,15 +126,11 @@ class Todo
     /**
      * Set insertDate
      *
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
      * @return mixed
      */
-    public function setInsDate()
+    public function setInsDate($date)
     {
-        if($this->insertDate < new \DateTime("0000-01-01")){
-            $this->insertDate = new \DateTime();
-        }
+        $this->insertDate = $date;
         return $this;
     }
 
@@ -229,7 +225,7 @@ class Todo
 
     public function __toString()
     {
-        return $this->title ?  $this->title : "New todo";
+        return $this->title ? $this->title : "New todo";
     }
 
 

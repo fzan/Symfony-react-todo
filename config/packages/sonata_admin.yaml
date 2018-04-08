@@ -1,10 +1,13 @@
 sonata_admin:
-    title: 'Sonata Admin'
+    title: 'Admin Area'
     dashboard:
         blocks:
             - { type: sonata.admin.block.admin_list, position: left }
     security:
          handler: sonata.admin.security.handler.role
+
+    templates:
+        dashboard: 'dashboard.html.twig'
 
 sonata_notification:
     admin:
