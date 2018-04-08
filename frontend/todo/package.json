@@ -1,0 +1,31 @@
+{
+  "name": "todo",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "ajv": "^6.4.0",
+    "axios": "^0.18.0",
+    "font-awesome": "^4.7.0",
+    "moment": "^2.22.0",
+    "react": "^16.3.1",
+    "react-big-calendar": "^0.19.0",
+    "react-contextmenu": "^2.9.2",
+    "react-dom": "^16.3.1",
+    "react-scripts": "1.1.4",
+    "simple-react-modal": "^0.5.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && npm run build-rename",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "build-rename": "npm run build-rename-js && npm run build-rename-css && npm run build-move-js && npm run build-move-css",
+    "build-rename-js": "renamer --regex --find 'main\\.[^\\.]+\\.js' --replace 'main-react.js' build/static/js/*.js",
+    "build-rename-css": "renamer --regex --find 'main\\.[^\\.]+\\.css' --replace 'main-react.css' build/static/css/*.css",
+    "build-move-css": "cp build/static/css/main-react.css ../../public/css",
+    "build-move-js": "cp build/static/js/main-react.js ../../public/js"
+  },
+  "devDependencies": {
+    "renamer": "^0.6.1"
+  }
+}
