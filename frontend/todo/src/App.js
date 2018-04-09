@@ -5,76 +5,18 @@ import moment from 'moment'
 import 'moment/locale/it'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import CustomTodo from './Components/CustomTodo'
-import {fetchTodos, addTodo, toggleTodo} from './Utils/API'
+import {getDummyTodos, fetchTodos, addTodo, toggleTodo} from './Utils/API'
 import TodoModal from "./Components/TodoModal"
 
 import {unregister} from './registerServiceWorker';
 
 unregister();
-
-const events = [{
-    "id": 50,
-    "title": "asdas",
-    "isCompleted": true,
-    "end": "2018-04-04T23:30:59+00:00",
-    "modify_date": "2018-04-08T21:06:35+00:00",
-    "start": "2018-04-04T00:00:00+00:00"
-},
-    {
-        "id": 51,
-        "title": "asdone",
-        "isCompleted": true,
-        "end": "2018-04-04T02:30:00+00:00",
-        "modify_date": "2018-04-08T21:06:59+00:00",
-        "start": "2018-04-04T02:00:00+00:00"
-    },
-    {
-        "id": 52,
-        "title": "piu giorni",
-        "isCompleted": false,
-        "end": "2018-04-08T00:00:00+00:00",
-        "modify_date": "2018-04-08T21:08:14+00:00",
-        "start": "2018-04-06T00:00:00+00:00"
-    },
-    {
-        "id": 53,
-        "title": "",
-        "isCompleted": false,
-        "end": "2018-04-03T00:00:00+00:00",
-        "modify_date": "2018-04-08T21:12:20+00:00",
-        "start": "2018-04-02T00:00:00+00:00"
-    },
-    {
-        "id": 54,
-        "title": "ggg",
-        "isCompleted": false,
-        "end": "2018-04-05T07:00:00+00:00",
-        "modify_date": "2018-04-08T21:15:22+00:00",
-        "start": "2018-04-05T02:00:00+00:00"
-    },
-    {
-        "id": 55,
-        "title": "asd",
-        "isCompleted": false,
-        "end": "2018-04-06T06:00:00+00:00",
-        "modify_date": "2018-04-08T21:15:43+00:00",
-        "start": "2018-04-06T01:00:00+00:00"
-    },
-    {
-        "id": 56,
-        "title": "dalle 2 alle 6",
-        "isCompleted": false,
-        "end": "2018-04-07T06:00",
-        "modify_date": "2018-04-08T21:18:13+00:00",
-        "start": "2018-04-07T02:00"
-    }]
-
 class App extends Component {
 
     state = {
         selectedDate: null,
         selectedTitle: "",
-        events: events,
+        events: [],
         loading: false,
         show: false
     };
@@ -101,7 +43,6 @@ class App extends Component {
                     return e;
                 });
                 //console.error(events);
-
                 this.setState({
                     selectedStartDate: null,
                     selectedEndDate: null,
@@ -114,16 +55,25 @@ class App extends Component {
     }
 
     componentWillMount() {
+
+        /* Note: this section is unnecessary and it's only purpose is to allow some testing :[ */
         if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
             console.log('Development');
             let _that = this;
-            let events = this.state.events.map(function (e) {
+            let events = getDummyTodos();
+            events.map(function (e) {
                 e.onToggleTodo = _that.onToggleTodo.bind(_that);
                 return e;
             });
+            this.setState({events:events});
 
-        } else {
-            console.log('Production');
+        } else if (!process.env.NODE_ENV || process.env.NODE_ENV ==='test'){
+            //as stated at the beginning:
+            //do not call reloadTodo() due to axios bug
+            //See https://github.com/node-nock/nock/issues/699
+        }else{
+            //console.log('Production');
+            //initial loading phase
             this.setState({loading: true});
             this.reloadTodo();
         }
@@ -163,13 +113,14 @@ class App extends Component {
     }
 
     render() {
-        //Todo, add a loading gif that is not rewrited every time we deploy! :-/
+
         if (this.state.loading) {
-            return <img src="/images/loading.gif"/>
+            //return a loading spinner
+            return <img src="/images/loading.gif" alt={"loading"}/>
         }
         return (
             <div>
-
+                {/* This is the modal for the info title and action*/}
                 <TodoModal
                     show={this.state.show}
                     close={() => this.close()}
@@ -181,7 +132,7 @@ class App extends Component {
                 <BigCalendar
                     selectable
                     events={this.state.events}
-                    formats={{eventTimeRangeFormat:" "}}
+                    formats={{eventTimeRangeFormat:()=>{}}}
                     defaultView="week"
                     components={{event: CustomTodo}}
                     views={['week']}

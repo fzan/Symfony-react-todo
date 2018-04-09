@@ -63,7 +63,7 @@ class TodoRepository extends EntityRepository
      */
     public function addTodo(Todo $todo, \App\Application\Sonata\UserBundle\Entity\User $user)
     {
-        if (!is_null($user) && $todo->getOwner() == $user || $user->hasRole('ROLE_SUPER_ADMIN')) {
+        if (!is_null($user) || $user->hasRole('ROLE_SUPER_ADMIN')) {
             $todo->setOwner($user);
             $this->_em->persist($todo);
             $this->_em->flush();
