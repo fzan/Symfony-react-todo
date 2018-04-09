@@ -11,6 +11,7 @@ import TodoModal from "./Components/TodoModal"
 import {unregister} from './registerServiceWorker';
 
 unregister();
+
 class App extends Component {
 
     state = {
@@ -65,13 +66,13 @@ class App extends Component {
                 e.onToggleTodo = _that.onToggleTodo.bind(_that);
                 return e;
             });
-            this.setState({events:events});
+            this.setState({events: events});
 
-        } else if (!process.env.NODE_ENV || process.env.NODE_ENV ==='test'){
+        } else if (!process.env.NODE_ENV || process.env.NODE_ENV === 'test') {
             //as stated at the beginning:
             //do not call reloadTodo() due to axios bug
             //See https://github.com/node-nock/nock/issues/699
-        }else{
+        } else {
             //console.log('Production');
             //initial loading phase
             this.setState({loading: true});
@@ -81,12 +82,14 @@ class App extends Component {
     }
 
     onSelectDate(slotInfo) {
-        this.setState(
-            {
-                selectedStartDate: moment(slotInfo.start).format('Y-MM-DD HH:mm'),
-                selectedEndDate: moment(slotInfo.end).format('Y-MM-DD HH:mm')
-            });
-        this.show();
+        if (moment(slotInfo.start).isValid() && moment(slotInfo.end).isValid()) {
+            this.setState(
+                {
+                    selectedStartDate: moment(slotInfo.start).format('Y-MM-DD HH:mm'),
+                    selectedEndDate: moment(slotInfo.end).format('Y-MM-DD HH:mm')
+                });
+            this.show();
+        }
     }
 
     onConfirmTitle(value) {
@@ -132,7 +135,10 @@ class App extends Component {
                 <BigCalendar
                     selectable
                     events={this.state.events}
-                    formats={{eventTimeRangeFormat:()=>{}}}
+                    formats={{
+                        eventTimeRangeFormat: () => {
+                        }
+                    }}
                     defaultView="week"
                     components={{event: CustomTodo}}
                     views={['week']}

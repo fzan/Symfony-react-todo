@@ -6,7 +6,7 @@ Travis [![Build Status](https://travis-ci.org/fzan/Symfony-react-todo.svg?branch
 2) FOS REST API with NELMIO apidoc on /api/doc 
 3) React-create-app dashboard
 4) Some Phpunit backend + Sonata admin tests
-   - Missing React tests (for now 3:-D ) 
+   - Almost no React tests (for now, just the standard 3:-D ) 
 5) Integrated travis-ci 
 6) Heroku-ready configuration
 7) Optional docker script (to check)
