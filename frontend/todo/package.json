@@ -26,6 +26,8 @@
     "build-move-js": "cp build/static/js/main-react.js ../../public/js"
   },
   "devDependencies": {
+    "axios-mock-adapter": "^1.15.0",
+    "jsdom-global": "^3.0.2",
     "renamer": "^0.6.1"
   }
 }

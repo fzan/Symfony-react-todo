@@ -12,11 +12,17 @@ Travis [![Build Status](https://travis-ci.org/fzan/Symfony-react-todo.svg?branch
 7) Optional docker script (to check)
 
 ### HowTo
-To be done, for now just run 
+To be ready, for now just run 
 
 > composer install
 
 From the command line.
+
+Use
+
+> phpunit .
+
+For unit testing.
 
 if you want to rebuild the frontend app, go to:
 
@@ -26,5 +32,12 @@ and
 
 > npm install && npm run build
 
+If you encounter an error like:
+
+>events.js:165
+>      throw er; // Unhandled 'error' event
+
+Try to 
+> brew install watchman
 
 Have fun and leave me a message :]
